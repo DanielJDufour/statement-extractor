@@ -60,3 +60,9 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+#Misc
+*swp*
+*swo*
+*hidden*
+*bak*

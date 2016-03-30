@@ -32,7 +32,10 @@ language_statement_pattern = {}
 ################################################
 keyword = language_keyword_pattern['English']
 print "keyword is", keyword
-speaker = "(?P<speaker>[A-Za-z]+)"
+proper_noun = "(?:[A-Z][a-z]{2,15})(?: [A-Z][a-z]{2,15})*"
+speaker = "(?P<speaker>" + proper_noun + "|[A-Za-z]+)"
+word = "(?:[A-Z]?[a-z]{1,15})"
+words = "(?: " + word + ")*"
 #quote = """(?:"|')(?P<quote>[^\"']*),?(?:"|')"""
 #quote = """("|')(?P<quote>[^\"']*),?\1"""
 #quote = """(?P<qchar>"|')(?P<quote>[^(?P=qchar)]*)(?<!,),?(?P=qchar)"""
@@ -42,9 +45,15 @@ speaker = "(?P<speaker>[A-Za-z]+)"
 # which means that the quote ends as soon as we hit another qchar
 # \u201c is left quote
 #quote = """(?P<qchar>"|'|\u201c)(?P<quote>[^\n\r\t]{3,1000}?),?(?P=qchar)"""
-quote = u"""(?P<qchar>"|'|(?P<ldquo>\u201c))(?P<quote>[^\n\r\t]{3,1000}?),?(?(ldquo)(?:\u201d)|(?P=qchar))"""
-skq = speaker.replace("speaker","speaker_skq") + " " + keyword.replace("keyword","keyword_skq") + " " + quote.replace("quote","quote_skq").replace("qchar","qchar_skq").replace("ldquo","ldquo_skq")
-qsk = quote.replace("quote","quote_qsk").replace("qchar","qchar_qsk").replace("ldquo","ldquo_qsk") + ",? " + speaker.replace("speaker","speaker_qsk") + " " + keyword.replace("keyword","keyword_qsk")
+#quote = u"""(?P<qchar>"|'|(?P<ldquo>\u201c))(?P<quote>[^\n\r\t]{3,1000}?),?(?(ldquo)(?:\u201d)|(?P=qchar))"""
+#quote = u"""(?P<qchar>"|'|(?P<ldquo>\u201c|&ldquo;))(?P<quote>[^\n\r\t]{3,1000}?),?(?(ldquo)(?:\u201d|&rdquo;)|(?P=qchar))"""
+quote = u"""(?P<qchar>"|'|&quot;|(?P<lchar>\u201c|&ldquo;))(?P<quote>[^\n\r\t]{3,1000}?),?(?(lchar)(?:\u201d|&rdquo;)|(?P=qchar))"""
+#skq = speaker.replace("speaker","speaker_skq") + " " + keyword.replace("keyword","keyword_skq") + "(?: [A-Za-z]{3,10})? " + quote.replace("quote","quote_skq").replace("qchar","qchar_skq").replace("ldquo","ldquo_skq")
+# make sure in doesn't proceed speaker; this often happens when s is actually a place
+# make sure speaker isn't actually part of a word
+#skq = "(?<!in )(?<![A-Za-z])" + speaker.replace("speaker","speaker_skq") + "(?:, [^,]+,)? " + keyword.replace("keyword","keyword_skq") + "(?: [A-Za-z]{3,10})?,? " + quote.replace("quote","quote_skq").replace("qchar","qchar_skq").replace("lchar","lchar_skq")
+skq = "(?<!in )(?<![A-Za-z])" + speaker.replace("speaker","speaker_skq") + "(?:, [^,]+,)? " + keyword.replace("keyword","keyword_skq") + words + ",? " + quote.replace("quote","quote_skq").replace("qchar","qchar_skq").replace("lchar","lchar_skq")
+qsk = quote.replace("quote","quote_qsk").replace("qchar","qchar_qsk").replace("lchar","lchar_qsk") + ",? " + speaker.replace("speaker","speaker_qsk") + " " + keyword.replace("keyword","keyword_qsk")
 statement = "(?:" + skq + "|" + qsk + ")"
 #statement = "(?P<statement>" + skq + "|" + qsk + ")"
 language_statement_pattern['English'] = statement

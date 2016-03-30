@@ -4,6 +4,7 @@ asserted
 called
 calling
 insisted
+reported
 quip
 quiped
 quipped
@@ -11,3 +12,4 @@ said
 say
 saying
 spoke
+told

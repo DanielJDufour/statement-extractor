@@ -66,6 +66,24 @@ class TestMethods(unittest.TestCase):
         statement = extract_statement(text)
         self.assertEqual(statement['speaker'], "Rubio")
         self.assertEqual(statement['quote'], u"You don\u2019t repeat yourself?")
+
+    def test10(self):
+        text = 'Mark told Jacob "I will protect you."'
+        statement = extract_statement(text)
+        self.assertEqual(statement['speaker'], "Mark")
+        self.assertEqual(statement['quote'], "I will protect you.")
+
+    def test11(self):
+        text = 'Mark, the lead on the project, told Jacob "I will make sure you get a promotion."'
+        statement = extract_statement(text)
+        self.assertEqual(statement['speaker'], "Mark")
+        self.assertEqual(statement['quote'], "I will make sure you get a promotion.")
+
+    def test12(self):
+        text = '''Tripoli Prime Minister Khalifa Ghwell said in a statement late on Tuesday that the airspace had been closed to "protect the souls of the people following the Presidential Council's inappropriate behaviour".'''
+        statement = extract_statement(text)
+        self.assertEqual(statement['speaker'], "Tripoli Prime Minister Khalifa Ghwell")
+        self.assertEqual(statement['quote'], "protect the souls of the people following the Presidential Council's inappropriate behaviour")
  
     if __name__ == '__main__':
         unittest.main()
