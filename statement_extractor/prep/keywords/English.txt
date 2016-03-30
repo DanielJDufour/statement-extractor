@@ -1,8 +1,11 @@
+aded
+added
 aserted
 asked
 asserted
 called
 calling
+declared
 insisted
 reported
 quip
@@ -12,4 +15,7 @@ said
 say
 saying
 spoke
+stressed
+stresed
 told
+urged

@@ -84,6 +84,23 @@ class TestMethods(unittest.TestCase):
         statement = extract_statement(text)
         self.assertEqual(statement['speaker'], "Tripoli Prime Minister Khalifa Ghwell")
         self.assertEqual(statement['quote'], "protect the souls of the people following the Presidential Council's inappropriate behaviour")
+
+    def test13(self):
+        text = """
+u'sing deep concern and disappointment at the leaders of Libya who were not able to overcome their differences," Ban urged them to show unity.</p>\n<p class="story-body-text" data-para-word-count="42">"They must address these issues with one government, one voice and with a sense of unity," Ban stressed, saying he has met Monday in Tunis wit'
+        """
+        statement = extract_statement(text)
+        self.assertEqual(statement['speaker'], 'Ban')
+        self.assertEqual(statement['quote'], "They must address these issues with one government, one voice and with a sense of unity")
+
+    def test14(self):
+        text = """
+ded.</p>
+<p class="story-body-text" data-para-word-count="25">While expressing deep concern and disappointment at the leaders of Libya who were not able to overcome their differences," Ban urged them to show unity.</p>
+<p class="story-body-text" data-para-word-count="42">
+        """
+        statement = extract_statement(text)
+        self.assertEqual(statement, None)
  
     if __name__ == '__main__':
         unittest.main()

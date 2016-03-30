@@ -76,7 +76,7 @@ def extract_statements(text, language=None):
     return statements
 
 def extract_statement(text):
-    return extract_statements(text)[0]
+    return (extract_statements(text) or [None])[0]
 
 # find repeated paragraphs
 def extract_interview(text):
