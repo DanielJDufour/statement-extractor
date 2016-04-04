@@ -50,29 +50,37 @@ def extract_statements(text, language=None):
         text = text.decode("utf-8")
 
     statements = []
-    if language:
-        pass
-    else:
 
-        for language, pattern in language_pattern.iteritems():
-            for matchobject in finditer(pattern, text):
-                #print "matchobject.start()", matchobject.start()
-                #print "matchobject.end()", matchobject.end()
-                dicts = {}
-                for key, value in matchobject.groupdict().iteritems():
-                    if value:
-                        k1, k2 = key.split("_")
-                        if k2 in dicts:
-                            dicts[k2][k1] = value
-                        else:
-                            dicts[k2] = {k1: value}
-                d = [v for k,v in dicts.iteritems() if len(v) >= 3]
-                if d:
-                    d = d[0]
-                    d = {"end": matchobject.end(), "language": language, "speaker": d['speaker'], "quote": clean(d['quote']), "start": matchobject.start()}
-                    statements.append(d)
+    if language:
+        tuples = [language, language_pattern[language]]
+    else:
+        tuples = language_pattern.iteritems()
+
+    for language, pattern in tuples:
+        for matchobject in finditer(pattern, text):
+            #print "matchobject.start()", matchobject.start()
+            #print "matchobject.end()", matchobject.end()
+            dicts = {}
+            for key, value in matchobject.groupdict().iteritems():
+                if value:
+                    k1, k2 = key.split("_")
+                    if k2 in dicts:
+                        dicts[k2][k1] = value
+                    else:
+                        dicts[k2] = {k1: value}
+            d = [v for k,v in dicts.iteritems() if len(v) >= 3]
+            if d:
+                d = d[0]
+                speaker = d['speaker']
+                if speaker.istitle():
+                    verbose_name = sorted(findall("(?:[A-Z][a-z]+ )*(?:" + speaker + ")(?: [A-Z][a-z]+)*", text), key=len)[-1]
+                    if len(verbose_name) < 50 and verbose_name.count(" ") < 6:
+                        speaker = verbose_name
+                d = {"end": matchobject.end(), "language": language, "speaker": speaker, "quote": clean(d['quote']), "start": matchobject.start()}
+                statements.append(d)
 
     extract_interview(text)
+
     return statements
 
 def extract_statement(text):
@@ -154,17 +162,17 @@ def extract_interview(text):
 
  
  
-    print "pattern is"
-    print [pattern]
+    #print "pattern is"
+    #print [pattern]
     mos =  list(finditer(pattern, text, MULTILINE|UNICODE|VERBOSE))
-    print "mos is", mos
+    #print "mos is", mos
     for mo in mos:
         #print "\n\nmatch object is ", matchobject.group(0)
         #print "\n\nmatch object cleaned is ", clean(matchobject.group(0))
 #        print "\n\n\n\nunclean is", mo.group(0)
-        print "text is", mo.group(0)
+        #print "text is", mo.group(0)
         text = clean(mo.group(0))
-        print "\ntext is", text
+        #print "\ntext is", text
 
     # replaces non-breaking space
     #text = text.replace(u"\xa0",u" ").replace("&nbsp;",u" ")
@@ -179,7 +187,7 @@ def extract_interview(text):
 #        (?P<answer>:[^\r\n]{10,1000})
 #    """, text, VERBOSE):
 #        print "mo is", mo.groupdict()
-    print "\n\n"
+    #print "\n\n"
 
 
 def get_keywords():
