@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/DanielJDufour/statement-extractor.svg?branch=master)](https://travis-ci.org/DanielJDufour/statement-extractor)
+
 # statement-extractor
 statement-extractor helps you extract statements from text
 
