@@ -50,7 +50,7 @@ words = "(?: " + word + ")*"
 # we put the " as an unacceptable character inside the quote; don't think I've ever seen this inside a quote
 # so probably okay and it helps make sure that we don't capture parts of surrounding tags
 # we added that weird (?=[^>]) because weird case where getting part of tag and starting with >
-quote = u"""(?P<qchar>"|'|&quot;|(?P<lchar>\u201c|&ldquo;))(?=[^>])(?P<quote>[^\n\r\t\"]{3,1000}?),?(?(lchar)(?:\u201d|&rdquo;)|(?P=qchar))"""
+quote = u"""(?P<qchar>\u0022|"|'|&quot;|(?P<lchar>\u201c|&ldquo;))(?=[^>])(?P<quote>[^\n\r\t\"]{3,1000}?),?(?(lchar)(?:\u201d|&rdquo;)|(?P=qchar))"""
 #skq = speaker.replace("speaker","speaker_skq") + " " + keyword.replace("keyword","keyword_skq") + "(?: [A-Za-z]{3,10})? " + quote.replace("quote","quote_skq").replace("qchar","qchar_skq").replace("ldquo","ldquo_skq")
 # make sure in doesn't proceed speaker; this often happens when s is actually a place
 # make sure speaker isn't actually part of a word
@@ -65,10 +65,18 @@ print "statement = '''" + statement + "'''"
 ###########################################
 ###########            ARABIC
 ##########################################
-#keyword = language_keyword_pattern['Arabic']
-#print "keyword is", keyword
-#pattern = u"(?:" + keyword + u"(?: (?:(?:\u0648?\u0627\u0644[^ .,\u060c\n\r<\";]*)|\u0641\u064a|(?:\u0628[^ .,\u060c\n\r<\"\u200e;]*)))+)(?<!\u0641\u064a)"
-#language_statement_pattern['Arabic'] = pattern
+arabic_keyword = language_keyword_pattern['Arabic'].replace("keyword","keyword_arabic")
+print "keyword is", [arabic_keyword]
+wa = u"\u0648"
+al = u"\u0627\u0644"
+letter = u"[^)( .,\u060c\n\r<\";\u200e]"
+word = letter + u"{3,15}"
+words = "(?: " + word + ")*"
+speaker = "(?P<speaker_arabic>" + word + ")"
+arabic_statement = "(?:" + wa+"?" + arabic_keyword + " " + speaker + words + " " + quote.replace("quote","quote_arabic").replace("qchar","qchar_arabic").replace("lchar","lchar_arabic") + ")"
+print "arabic regex statement is"
+print [arabic_statement]
+language_statement_pattern['Arabic'] = arabic_statement
 
 
 # write all patterns to their respective files
